@@ -1,0 +1,47 @@
+﻿@model GETApplication.Models.ExamSubjectsStudentsViewModel
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Update exam</h2>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class-danger></div>
+            <input type="hidden" asp-for="Exam.IspitId" class="form-control" />
+            <div class="form-group">
+                <lable asp-for="Exam.BrojIndeksa" class="control-label">Please select Index Number</lable>
+                <select asp-for="Exam.BrojIndeksa" class="form-control"
+                        asp-items="@(new SelectList(Model.Students,"BrojIndeksa","BrojIndeksa"))">
+                    <option>--</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <lable asp-for="Exam.PredmetId" class="control-label">Please select Subject</lable>
+                <select asp-for="Exam.PredmetId" class="form-control"
+                        asp-items="@(new SelectList(Model.Subjects, "PredmetId", "Naziv"))">
+                    <option>--</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <lable asp-for="Exam.Ocena" class="control-label"></lable>
+                <input asp-for="Exam.Ocena" placeholder="Grade" class="form-control" value="@(Model.Exam.Ocena)" type="number" min="5" max="10" />
+                <span asp-validation-for="Exam.Ocena" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <lable asp-for="Exam.DatumPolaganja" class="control-label"></lable>
+                <input type="datetime-local" asp-for="Exam.DatumPolaganja" class="form-control" />
+                <span asp-validation-for="Exam.DatumPolaganja" class="text-danger"></span>
+            </div>
+            <input type="hidden" asp-for="Exam.DatumKreiranja" class="form-control" />
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-success" />
+            </div>
+        </form>
+    </div>
+</div>
+<div>
+    <a asp-action="Index">Back to exams list</a>
+</div>

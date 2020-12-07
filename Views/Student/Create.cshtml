@@ -1,0 +1,42 @@
+﻿@model GETApplication.Models.Student
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Create new student</h2>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class-danger></div>
+            <div class="form-group">
+                <lable asp-for="BrojIndeksa" class="control-label"></lable>
+                <input asp-for="BrojIndeksa" placeholder="Broj indeksa" class="form-control" />
+                <span asp-validation-for="BrojIndeksa" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <lable asp-for="Ime" class="control-label"></lable>
+                <input asp-for="Ime" placeholder="Ime" class="form-control" />
+                <span asp-validation-for="Ime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <lable asp-for="Prezime" class="control-label"></lable>
+                <input asp-for="Prezime" placeholder="Prezime" class="form-control" />
+                <span asp-validation-for="Prezime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <lable asp-for="Grad" class="control-label"></lable>
+                <input asp-for="Grad" placeholder="Grad" class="form-control" />
+                <span asp-validation-for="Grad" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-success" />
+            </div>
+        </form>
+    </div>
+</div>
+<div>
+    <a asp-action="Index">Back to students list</a>
+</div>

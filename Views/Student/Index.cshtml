@@ -1,0 +1,91 @@
+﻿@{
+    ViewData["Title"] = "Students";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-10">
+        <h2 class="m-4">Students</h2>
+        <div class="m-auto">
+            <table class="table table-bordered table-striped" id="tblStudent" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Index Number</th>
+                        <th>Name</th>
+                        <th>Surname</th>
+                        <th>City</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <p class="m-4">
+            <a href="/Student/Create" class="btn btn-success ">Add new student</a>
+        </p>
+    </div>
+</div>
+@section scripts{
+    <script type="text/javascript">
+
+        $(function () {
+            $.ajax({
+                type: "POST",
+                url: "/Student/AjaxMethod",
+                data: '{}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                   OnSuccess(response);
+                },
+                failure: function (response) {
+                    alert(response.data);
+                },
+                error: function (response) {
+                    alert(response.data);
+                }
+            });
+        });
+        function OnSuccess(response) {
+            $('#tblStudent').DataTable(
+                {
+                    bLengthChange: false,
+                    lengthMenu: [[5, 10, -1], [5, 10, "All"]],
+                    bFilter: false,
+                    bSort: false,
+                    bPaginate: false,
+                    bInfo:false,
+                    data: response,
+                    columns: [
+                        {
+                            'data': 'studentId'
+                        },
+                        {
+                            'data': 'brojIndeksa',
+                        },
+                        {
+                            'data': 'ime',
+                        },
+                        {
+                            'data': 'prezime',
+                        },
+                        {
+                            'data': 'grad',
+                        },
+                        {
+                            'render': function (response, type, full, meta) { return '<a class="btn btn-info" href="/Student/Edit/' + full.studentId + '">Edit <i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>'; }
+                        },
+                        {
+                            'render': function (response, type, full, meta) { return '<a class="btn btn-danger" href="/Student/Delete/' + full.studentId + '">Delete <i class="fa fa-trash-o" aria-hidden="true"></i></a>'; }
+                        }
+
+
+                    ]
+
+                });
+
+
+        }
+    </script>
+}

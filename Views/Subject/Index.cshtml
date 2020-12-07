@@ -1,0 +1,79 @@
+﻿@{
+    ViewData["Title"] = "Subjects";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row" >
+    <div class="col-10">
+        <h2 class="m-4">Subjects</h2>
+        <div class="m-auto">
+        <table class="table table-bordered table-striped" id="tblSubject" style="width:100%">
+            <thead>
+                <tr>
+                    <th>PredmetId</th>
+                    <th>Naziv</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+        </table>
+        </div>
+        <p class="m-4">
+            <a href="/Subject/Create" class="btn btn-success ">Create new subject</a>
+        </p>
+    </div>
+</div>
+@section scripts{ 
+    <script type="text/javascript">
+        
+        $(function () {
+            $.ajax({
+                type: "POST",
+                url: "/Subject/AjaxMethod",
+                data: '{}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    OnSuccess(response);
+                },
+                failure: function (response) {
+                    alert(response.data);
+                },
+                error: function (response) {
+                    alert(response.data);
+                }
+            });
+        });
+        function OnSuccess(response) {
+            $('#tblSubject').DataTable(
+                {
+                    bLengthChange: false,
+                    lengthMenu: [[5, 10, -1], [5, 10, "All"]],
+                    bFilter: false,
+                    bSort: false,
+                    bPaginate: false,
+                    bInfo:false,
+                    data: response,
+                    columns: [
+                        {
+                            'data': 'predmetId'
+                        },
+                        {
+                            'data': 'naziv',
+                        },
+                        {
+                            'render': function (response, type, full, meta) { return '<a class="btn btn-info" href="/Subject/Edit/' + full.predmetId + '">Edit <i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>'; }
+                        },
+                        {
+                            'render': function (response, type, full, meta) { return '<a class="btn btn-danger" href="/Subject/Delete/' + full.predmetId + '">Delete <i class="fa fa-trash-o" aria-hidden="true"></i></a>'; }
+                        }
+                        
+
+                    ]
+
+                });
+
+
+        }
+    </script>
+}
