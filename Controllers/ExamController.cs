@@ -109,24 +109,11 @@ namespace GETApplication.Controllers
             {
                 return NotFound();
             }
-            System.Diagnostics.Debug.Write("Model state " + ModelState.IsValid);
-
-            System.Diagnostics.Debug.Write("Model state ID " + examObject.IspitId);
-
-            System.Diagnostics.Debug.Write("Model state BRI " + examObject.BrojIndeksa);
-            System.Diagnostics.Debug.Write("Model state PID " + examObject.PredmetId);
-            System.Diagnostics.Debug.Write("Model state O " + examObject.Ocena);
-
-            System.Diagnostics.Debug.Write("Model state DP " + examObject.DatumPolaganja);
-            System.Diagnostics.Debug.Write("Model state K " + examObject.DatumKreiranja);
-
             if (ModelState.IsValid)
             {
                 examService.EditExam(examObject);
                 return RedirectToAction("Index");
             }
-
-            
 
             ExamSubjectsStudentsViewModel ESSVM = new ExamSubjectsStudentsViewModel();
             ESSVM.Exam = examObject;
