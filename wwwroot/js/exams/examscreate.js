@@ -56,15 +56,6 @@ function checkIfAllOk() {
     }
 }
 
-//document.getElementById("selectedIndexNumber").addEventListener("change", event => {
-//    clickedOptionIndex = event.target.value;
-//    console.log(clickedOptionIndex);
-//});
-
-//document.getElementById("selectedSubjectId").addEventListener("change", event => {
-//    clickedOptionSubjectId = event.target.value;
-//    console.log(clickedOptionSubjectId);
-//});
 
 document.getElementById("datetimeExamDate").addEventListener("change", event => {
     dateExam = event.target.value;
@@ -73,10 +64,6 @@ document.getElementById("datetimeExamDate").addEventListener("change", event => 
     console.log(dateExam);
 });
 
-//document.getElementById("numberGrade").addEventListener("change", event => {
-//    grade = event.target.value;
-//    console.log(grade);
-//});
 
 document.getElementById("btnSaveExam").addEventListener("click", event => {
 

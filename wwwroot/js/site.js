@@ -45,12 +45,12 @@ function getExams() {
 function refreshTable(response) {
     $('#tblExam').DataTable({
         bRetrieve: true,
-        bLengthChange: false,
+        bLengthChange: true,
         lengthMenu: [[5, 10, -1], [5, 10, "All"]],
-        bFilter: false,
-        bSort: false,
-        bPaginate: false,
-        bInfo: false,
+        bFilter: true,
+        bSort: true,
+        bPaginate: true,
+        bInfo: true,
         data: response,
         columns: [
             {
