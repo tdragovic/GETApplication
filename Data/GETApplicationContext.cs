@@ -12,10 +12,11 @@ namespace GETApplication.Data
         public GETApplicationContext (DbContextOptions<GETApplicationContext> options)
             : base(options)
         {
+            
         }
 
-        public DbSet<GETApplication.Models.Subject> Predmet { get; set; }
-        public DbSet<GETApplication.Models.Student> Student { get; set; }
-        public DbSet<GETApplication.Models.Exam> Exam { get; set; }
+        public DbSet<Subject> Predmet { get; set; }
+        public DbSet<Student> Student { get; set; }
+        public DbSet<Exam> Exam { get; set; }
     }
 }

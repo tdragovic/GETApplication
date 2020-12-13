@@ -7,8 +7,8 @@
 
 <h2>Update student</h2>
 
-<div class="row">
-    <div class="col-md-4">
+<div class="card my-5">
+    <div class="d-flex justify-content-center p-3 text-left">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class-danger></div>
             <input type="hidden" asp-for="StudentId" />
@@ -32,7 +32,7 @@
                 <input asp-for="Grad" class="form-control" />
                 <span asp-validation-for="Grad" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group text-center">
                 <input type="submit" value="Save" class="btn btn-success" />
             </div>
         </form>

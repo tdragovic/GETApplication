@@ -4,10 +4,10 @@
 }
 
 <div class="row" >
-    <div class="col-10">
+    <div class="col-12">
         <h2 class="m-4">Subjects</h2>
         <div class="m-auto">
-        <table class="table table-bordered table-striped" id="tblSubject" style="width:100%">
+        <table class="table w-100 table-bordered table-striped" id="tblSubject">
             <thead>
                 <tr>
                     <th>PredmetId</th>
@@ -62,7 +62,7 @@
                             'data': 'naziv',
                         },
                         {
-                            'render': function (response, type, full, meta) { return '<a class="btn btn-info" href="/Subject/Edit/' + full.predmetId + '">Edit <i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>'; }
+                            'render': function (response, type, full, meta) { return '<a class="btn btn-info d-flex align-items-center justify-content-center" href="/Subject/Edit/' + full.predmetId + '">Edit <i class="fa fa-pencil-square-o ml-1" aria-hidden="true"></i></a>'; }
                         },
                         {
                             'render': function (response, type, full, meta) { return '<a class="btn btn-danger" href="/Subject/Delete/' + full.predmetId + '">Delete <i class="fa fa-trash-o" aria-hidden="true"></i></a>'; }

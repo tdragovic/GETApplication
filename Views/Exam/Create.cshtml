@@ -6,40 +6,38 @@
 
 <h2>Create new exam</h2>
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class-danger></div>
+<div class="card my-5">
+    <div class="d-flex justify-content-center p-3 text-left">
+        <form>
             <div class="form-group">
-                <lable asp-for="Exam.PredmetId" class="control-label">Please select Subject</lable>
-                <select asp-for="Exam.PredmetId" class="form-control"
-                        asp-items="@(new SelectList(Model.Subjects,"PredmetId","Naziv"))">
-                    <option>--</option>
-                </select>
+                <lable class="control-label">Please select Index Number</lable>
+                @Html.DropDownList("ddlDropDownList", new SelectList(Model.Students, "BrojIndeksa", "BrojIndeksa"), "--", new { @class = "form-control", @id = "selectedIndexNumber" })
+                <span class="text-danger" id="indexDanger"></span>
             </div>
             <div class="form-group">
-                <lable asp-for="Exam.BrojIndeksa" class="control-label">Please select Index Number</lable>
-                <select asp-for="Exam.BrojIndeksa" class="form-control"
-                        asp-items="@(new SelectList(Model.Students,"BrojIndeksa","BrojIndeksa"))">
-                    <option>--</option>
-                </select>
+                <lable class="control-label">Please select Subject</lable>
+                @Html.DropDownList("ddlDropDownList", new SelectList(Model.Subjects, "PredmetId", "Naziv"), "--", new { @class = "form-control", @id = "selectedSubjectId" })
+                <span class="text-danger" id="subjectDanger"></span>
             </div>
             <div class="form-group">
-                <lable asp-for="Exam.Ocena" class="control-label"></lable>
-                <input asp-for="Exam.Ocena" placeholder="Grade" value="5"  class="form-control" type="number"  min="5" max="10" />
-                <span asp-validation-for="Exam.Ocena" class="text-danger"></span>
+                <lable class="control-label">Grade</lable>
+                <input id="numberGrade" class="form-control" type="number" min="5" max="10" />
+                <small class="text-muted">Must be a value between 5-10</small>
             </div>
             <div class="form-group">
-                <lable asp-for="Exam.DatumPolaganja" class="control-label"></lable>
-                <input asp-for="Exam.DatumPolaganja" class="form-control" type="datetime-local" value="2011-08-19"/>
-                <span asp-validation-for="Exam.DatumPolaganja" class="text-danger"></span>
+                <lable class="control-label">Exam Date</lable>
+                <input id="datetimeExamDate" class="form-control" type="datetime-local" placeholder="2011-08-19" />
+                <span class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-success" />
+            <div class="form-group text-center">
+                <input id="btnSaveExam" type="button" value="Create" class="btn btn-success" />
             </div>
         </form>
     </div>
 </div>
 <div>
-    <a asp-action="Index">Back to exams list</a>
+    <a href="Index">Back to exams list</a>
 </div>
+@section scripts{
+    <script type="text/javascript" src="~/js/exams/examscreate.js"></script>
+}

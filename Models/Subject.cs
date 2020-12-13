@@ -10,7 +10,8 @@ namespace GETApplication.Models
     {
         public int PredmetId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Subject name is required.")]
+        [StringLength(20, ErrorMessage = "Subject name length must be between {2} and {1}.", MinimumLength = 2)]
         public string Naziv { get; set; }
 
     }

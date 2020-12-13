@@ -4,24 +4,27 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace GETApplication.Controllers
 {
     public class StudentController : Controller
     {
+        private readonly ILogger<StudentController> _logger;
+
+        public StudentController(ILogger<StudentController> logger)
+        {
+            _logger = logger;
+        }
+
         StudentService service = new StudentService();
 
-        // GET: /Student/
-        // GET: /Student/Index
         [Route("Student/{Index?}")]
         public IActionResult Index()
         {
-            //List<Student> students = new List<Student>();
-            //students = service.AllStudents().ToList();
             return View();
         }
 
-        //GET: /Student/Create
         [Route("Student/Create")]
         [HttpGet]
         public IActionResult Create()
@@ -29,118 +32,164 @@ namespace GETApplication.Controllers
             return View();
         }
 
-
-        //POST: /Student/Create
         [Route("Student/Create")]
         [HttpPost, ActionName("Create")]
         [ValidateAntiForgeryToken]
         public IActionResult Create([Bind] Student student)
         {
+            
+            if (student == null) return BadRequest();
+
             if (ModelState.IsValid)
             {
-                service.CreateStudent(student);
-                return RedirectToAction("Index");
+                try
+                {
+                    _logger.LogInformation("Create new student in the database.");
+                    service.CreateStudent(student);
+                    _logger.LogInformation($"Student has been created.");
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Something went wrong: {ex}");
+                    return StatusCode(500, "Internal server error.");
+                }
             }
+
             return View(student);
         }
 
-        //GET: /Student/Edit/5
         [Route("Student/Edit/{studentId}")]
         [HttpGet]
         public IActionResult Edit(int? studentId)
         {
-            if (studentId == null)
-            {
-                return NotFound();
-            }
+            if (studentId == null)return BadRequest();
+            
+            try {
+                _logger.LogInformation("Fetching student by Id from the database.");
+                Student student = service.GetStudentById(studentId);
 
-            Student student = service.GetStudentById(studentId);
+                if (student == null) return NotFound();
+                _logger.LogInformation($"Returning student by ID {studentId}.");
 
-            if (student == null)
-            {
-                return NotFound();
+                return View(student);
             }
-            return View(student);
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong: {ex}");
+                return StatusCode(500, "Internal server error.");
+            }
         }
 
-        //POST: /Student/Edit/5
+        
         [Route("Student/Edit/{studentId}")]
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int? studentId, [Bind] Student studentObject)
         {
-            if (studentId == null)
-            {
-                return NotFound();
-            }
+            if (studentId == null) return NotFound();
+            
 
             if (ModelState.IsValid)
             {
-                service.EditStudent(studentObject);
-                return RedirectToAction("Index");
+                try
+                {
+                    _logger.LogInformation("Edit student in the database.");
+                    service.EditStudent(studentObject);
+                    _logger.LogInformation($"Student by ID {studentId} has been updated.");
+
+                    return RedirectToAction("Index");
+
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Something went wrong: {ex}");
+                    return StatusCode(500, "Internal server error.");
+                }
             }
 
-            return View(service);
+            return View(studentObject);
         }
 
-        // GET: /Student/Delete/5
+       
         [Route("Student/Delete/{studentId}")]
+        [HttpGet]
         public IActionResult Delete(int? studentId)
         {
-            if (studentId == null)
+            if (studentId == null) return NotFound();
+            
+            try
             {
-                return NotFound();
+                _logger.LogInformation("Fetching subject by ID from the database.");
+                Student student = service.GetStudentById(studentId);
+                if (student == null) return NotFound();
+                _logger.LogInformation($"Returning subject by ID {studentId}.");
+                return View(student);
             }
-
-            Student student = service.GetStudentById(studentId);
-
-            if (student == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                _logger.LogError($"Something went wrong: {ex}");
+                return StatusCode(500, "Internal server error.");
             }
-            return View(student);
         }
 
-        // POST: /Student/Delete/5
         [Route("Student/Delete/{studentId}")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteStudent(int? studentId)
         {
-            service.DeleteStudent(studentId);
-            return RedirectToAction("Index");
+            if (studentId == null) return BadRequest();
+
+            try
+            {
+                _logger.LogInformation("Deleting student by Id from the database.");
+                service.DeleteStudent(studentId);
+                _logger.LogInformation($"Student by ID {studentId} has been deleted.");
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong: {ex}");
+                return StatusCode(500, "Internal server error.");
+            }
         }
 
-        //GET: /Student/4
+       
         [Route("Student/{studentId}")]
         [HttpGet]
         public IActionResult StudentById(int? studentId)
         {
-            if (studentId == null)
+            if (studentId == null) return StatusCode(404, "Student not found. Internal server error.");
+            
+            try
             {
-                return NotFound();
+                _logger.LogInformation("Fetching studentt by Id from the database.");
+                Student student = service.GetStudentById(studentId);
+                 _logger.LogInformation($"Returning student by ID {studentId}.");
+                return Ok(student);
             }
-
-            Student student = service.GetStudentById(studentId);
-
-            if (student == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                _logger.LogError($"Something went wrong: {ex}");
+                return StatusCode(500, "Internal server error.");
             }
-            return View(student);
         }
 
-        // POST: /Student/AjaxMethod
         [Route("Student/AjaxMethod")]
         [HttpPost]
         public JsonResult AjaxMethod()
         {
             List<Student> data = new List<Student>();
 
-            data = service.AllStudents().ToList();
-
-
-            return Json(data);
+            try {
+                data = service.AllStudents().ToList();
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong: {ex}");
+                return Json(new { message = "Internal server error." });
+            }
         }
     }
 }

@@ -4,10 +4,10 @@
 }
 
 <div class="row">
-    <div class="col-10">
+    <div class="col-12" >
         <h2 class="m-4">Students</h2>
-        <div class="m-auto">
-            <table class="table table-bordered table-striped" id="tblStudent" style="width:100%">
+        <div class="m-auto d-flex justify-content-center align-items-center">
+            <table class="table w-100 table-bordered table-striped" id="tblStudent">
                 <thead>
                     <tr>
                         <th>Student ID</th>
@@ -74,7 +74,7 @@
                             'data': 'grad',
                         },
                         {
-                            'render': function (response, type, full, meta) { return '<a class="btn btn-info" href="/Student/Edit/' + full.studentId + '">Edit <i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>'; }
+                            'render': function (response, type, full, meta) { return '<a class="btn btn-info d-flex align-items-center justify-content-center" href="/Student/Edit/' + full.studentId + '">Edit <i class="fa fa-pencil-square-o ml-1" aria-hidden="true"></i></a>'; }
                         },
                         {
                             'render': function (response, type, full, meta) { return '<a class="btn btn-danger" href="/Student/Delete/' + full.studentId + '">Delete <i class="fa fa-trash-o" aria-hidden="true"></i></a>'; }

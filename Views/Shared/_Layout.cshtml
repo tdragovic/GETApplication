@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/font-awesome/font-awesome/css/font-awesome.min.css">
-    
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
@@ -24,9 +23,6 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark m-2" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <!-- <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>-->
                         <li class="nav-item">
                             <a class="nav-link text-dark m-2" asp-area="" asp-controller="Subject" asp-action="Index">Subjects</a>
                         </li>
@@ -41,7 +37,7 @@
             </div>
         </nav>
     </header>
-    <div class="container">
+    <div class="container d-flex justify-content-center align-items-center text-center">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
@@ -50,15 +46,14 @@
     <footer class="border-top footer text-muted">
         <div class="container text-center">
             &copy; 2020 - GETApplication - Tamara Dragovic
-            <!--<a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>-->
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap.min.js"></script>
+    <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true" type="text/javascript"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

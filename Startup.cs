@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using GETApplication.Data;
+using GETApplication.Hubs;
 
 namespace GETApplication
 {
@@ -19,13 +20,14 @@ namespace GETApplication
         {
             Configuration = configuration;
         }
-
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-
+            
+            services.AddSignalR();
+            
             services.AddDbContext<GETApplicationContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("GETApplicationContext")));
         }
@@ -41,15 +43,18 @@ namespace GETApplication
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+            app.UseCors();
             app.UseRouting();
 
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<RealtimeDatabaseHub>("/examhub");
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

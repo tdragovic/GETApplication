@@ -1,51 +1,39 @@
-﻿using GETApplication.Models;
+﻿using GETApplication.Hubs;
+using GETApplication.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Json;
+using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Microsoft.Data.SqlClient;
 
 namespace GETApplication.Controllers
 {
     public class ExamController : Controller
     {
-        ExamService examService = new ExamService();
+        private readonly ILogger<ExamController> _logger;
 
-        // GET: /Exam/
-        // GET: /Exam/Index
+        public ExamController(ILogger<ExamController> logger)
+        {
+            _logger = logger;
+        }
+        
+        ExamService examService = new ExamService();
+        SubjectServices subjectService = new SubjectServices();
+        StudentService studentService = new StudentService();
+
         [Route("Exam/{Index?}")]
         public IActionResult Index()
         {
-            ExamSubjectViewModel ESVM = new ExamSubjectViewModel();
-            ESVM.Exams = GetExamModel();
-            ESVM.Subjects = GetSubjectsModel();
-            return View(ESVM);
+            return View();
         }
 
-        public List<Exam> GetExamModel()
-        {
-            List<Exam> exams = new List<Exam>();
-            exams = examService.AllExams().ToList();
-            return exams;
-        }
-
-        public List<Subject> GetSubjectsModel()
-        {
-            List<Subject> subjects = new List<Subject>();
-            SubjectServices subjectService = new SubjectServices();
-            subjects = subjectService.GetAllSubjects().ToList();
-            return subjects;
-        }
-
-        public List<Student> GetStudentsModel()
-        {
-            List<Student> students = new List<Student>();
-            StudentService studentService = new StudentService();
-            students = studentService.AllStudents().ToList();
-            return students;
-        }
-
-        //GET: /Exam/Create
         [Route("Exam/Create")]
         [HttpGet]
         public IActionResult Create()
@@ -54,129 +42,174 @@ namespace GETApplication.Controllers
             ESSVM.Exam = new Exam();
             ESSVM.Subjects = GetSubjectsModel();
             ESSVM.Students = GetStudentsModel();
+
             return View(ESSVM);
         }
 
-        //POST: /Exam/Create
         [Route("Exam/Create")]
         [HttpPost, ActionName("Create")]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind] Exam exam)
+        public IActionResult Create([FromBody] Exam exam)
         {
-            if (ModelState.IsValid)
+            if (exam==null) return BadRequest();
+
+            try
             {
+                _logger.LogInformation("Create new exam in the database.");
                 examService.CreateExam(exam);
+                _logger.LogInformation($"Exam has been created.");
                 return RedirectToAction("Index");
+
             }
-            return View(exam);
+            catch (SqlException ex)
+            {
+                _logger.LogError($"Something went wrong SQL: {ex}");
+                return StatusCode(500, "Internal server error. Element not created.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong: {ex}");
+                return StatusCode(500, "Internal server error.");
+            }
         }
 
-        //GET: /Exam/Edit/5
         [Route("Exam/Edit/{examId}")]
         [HttpGet]
         public IActionResult Edit(int? examId)
         {
-            if (examId == null)
+            if (examId == null) return BadRequest();
+
+           try
             {
-                return NotFound();
+                _logger.LogInformation("Fetching exam by Id from the database.");
+                Exam exam = examService.GetExamById(examId);
+                _logger.LogInformation($"Returning exam by ID {examId}.");
+
+                if (exam == null) return NotFound();
+
+                ExamSubjectsStudentsViewModel ESSVM = new ExamSubjectsStudentsViewModel();
+                ESSVM.Exam = exam;
+                ESSVM.Subjects = GetSubjectsModel();
+                ESSVM.Students = GetStudentsModel();
+
+                return View(ESSVM);
+         
             }
-
-            Exam exam = examService.GetExamById(examId);
-
-            if (exam == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                _logger.LogError($"Something went wrong: {ex}");
+                return StatusCode(500, "Internal server error.");
             }
-
-            ExamSubjectsStudentsViewModel ESSVM = new ExamSubjectsStudentsViewModel();
-            ESSVM.Exam = exam;
-            ESSVM.Subjects = GetSubjectsModel();
-            ESSVM.Students = GetStudentsModel();
-            return View(ESSVM);
         }
 
-        //POST: /Exam/Edit/5
-        [Route("Exam/Edit/{examId}")]
+        [Route("Exam/Edit")]
         [HttpPost, ActionName("Edit")]
-        [ValidateAntiForgeryToken]
-        public IActionResult Edit(int? examId, [Bind] Exam examObject)
+        public IActionResult Edit([FromBody] Exam examObject)
         {
-            
-            
+            if (examObject == null) return BadRequest();
 
-
-            if (examId == null)
+            try
             {
-                return NotFound();
-            }
-            if (ModelState.IsValid)
-            {
+                _logger.LogInformation("Edit exam in the database.");
                 examService.EditExam(examObject);
+                _logger.LogInformation($"Exam by ID {examObject.IspitId} has been updated.");
                 return RedirectToAction("Index");
+
             }
-
-            ExamSubjectsStudentsViewModel ESSVM = new ExamSubjectsStudentsViewModel();
-            ESSVM.Exam = examObject;
-            ESSVM.Subjects = GetSubjectsModel();
-            ESSVM.Students = GetStudentsModel();
-
-            return View(ESSVM);
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong: {ex}");
+                return StatusCode(500, "Internal server error.");
+            }
         }
 
-        // GET: /Exam/Delete/5
+        
         [Route("Exam/Delete/{examId}")]
+        [HttpGet]
         public IActionResult Delete(int? examId)
         {
-            if (examId == null)
-            {
-                return NotFound();
-            }
+            if (examId == null) return BadRequest();
 
-            Exam exam = examService.GetExamById(examId);
-
-            if (exam == null)
+            try
             {
-                return NotFound();
+                _logger.LogInformation("Fetching exam by Id from the database.");
+                Exam exam = examService.GetExamById(examId);
+
+                if (exam == null) return NotFound();
+                _logger.LogInformation($"Returning exam by ID {examId}.");
+
+                return View(exam);
             }
-            return View(exam);
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong: {ex}");
+                return StatusCode(500, "Internal server error.");
+            }
         }
 
-        // POST: /Exam/Delete/5
+
         [Route("Exam/Delete/{examId}")]
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
         public IActionResult DeleteStudent(int? examId)
         {
-            examService.DeleteExam(examId);
-
-            return RedirectToAction("Index");
-        }
-
-        // POST: /Exam/AjaxMethod
-        [Route("Exam/AjaxMethod")]
-        [HttpPost]
-        public JsonResult AjaxMethod()
-        {
-            List<Exam> exams = new List<Exam>();
+            if (examId==null) return BadRequest();
             
+            try
+            {
+                _logger.LogInformation("Deleting exam by Id from the database.");
+                examService.DeleteExam(examId);
+                _logger.LogInformation($"Exam by ID {examId} has been deleted.");
 
-            exams = examService.AllExams().ToList();
-            List<Subject> subjects = GetSubjectsModel();
-
-            List<Object> data = new List<object>();
-
-            exams.ForEach(exam => {
-                subjects.ForEach(subject => {
-                    if (exam.PredmetId==subject.PredmetId) {
-                        var objectExamWithName = new { examObject = exam, subjectName = subject.Naziv };
-                        data.Add(objectExamWithName);
-                    }
-                });
-                
-            });
-
-            return Json(data);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong: {ex}");
+                return StatusCode(500, "Internal server error.");
+            }
         }
 
+        [Route("Exam/GetAllExams")]
+        [HttpPost]
+        public JsonResult GetAllExams()
+        {
+            try
+            {
+                List<ExamExt> exams = examService.AllExams();
+                return Json(exams);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong: {ex}");
+                return Json(new { message = "Internal server error." });
+            }
+        }
+
+        public List<Subject> GetSubjectsModel()
+        {
+            try {
+                List<Subject> subjects = subjectService.GetAllSubjects().ToList();
+                return subjects;
+            }
+            catch (Exception ex) {
+                _logger.LogError($"Something went wrong: {ex}");
+                return null;
+            }
+          
+        }
+
+        public List<Student> GetStudentsModel()
+        {
+            try
+            {
+                List<Student> students = studentService.AllStudents().ToList();
+                return students;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong: {ex}");
+                return null;
+            }
+        }
     }
 }
+ 

@@ -5,17 +5,18 @@
 }
 
 <div class="row">
-    <div class="col-10">
+    <div class="col-12">
         <h2 class="m-4">Exams</h2>
-        <div class="m-auto">
-            <table class="table table-bordered table-striped" id="tblExam" style="width:100%">
+        <div class="m-auto d-flex justify-content-center align-items-center">
+            <table class="table w-100 table-bordered table-striped" id="tblExam">
                 <thead>
                     <tr>
                         <th>Exam ID</th>
-                        <th>Index Number for Student</th>
+                        <th>Index Number</th>
+                        <th>Student</th>
                         <th>Subject Name</th>
                         <th>Grade</th>
-                        <th>Date and Time</th>
+                        <th>Date</th>
                         <th>Edit</th>
                         <th>Delete</th>
                     </tr>
@@ -25,68 +26,6 @@
         <p class="m-4">
             <a href="/Exam/Create" class="btn btn-success ">Add new exam</a>
         </p>
+
     </div>
 </div>
-@section scripts{
-    <script type="text/javascript">
-
-        $(function () {
-            $.ajax({
-                type: "POST",
-                url: "/Exam/AjaxMethod",
-                data: '{}',
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (response) {
-                    OnSuccess(response);
-                },
-                failure: function (response) {
-                    alert(response.data);
-                },
-                error: function (response) {
-                    alert(response.data);
-                }
-            });
-        });
-        function OnSuccess(response) {
-            $('#tblExam').DataTable(
-                {
-                    bLengthChange: false,
-                    lengthMenu: [[5, 10, -1], [5, 10, "All"]],
-                    bFilter: false,
-                    bSort: false,
-                    bPaginate: false,
-                    bInfo:false,
-                    data: response,
-                    columns: [
-                        {
-                            'data': 'examObject.ispitId'
-                        },
-                        {
-                            'data': 'examObject.brojIndeksa',
-                        },
-                        {
-                            'data': 'subjectName',
-                        },
-                        {
-                            'data': 'examObject.ocena',
-                        },
-                        {
-                            'data': 'examObject.datumPolaganja',
-                        },
-                        {
-                            'render': function (response, type, full, meta) { return '<a class="btn btn-info" href="/Exam/Edit/' + full.examObject.ispitId + '">Edit <i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>'; }
-                        },
-                        {
-                            'render': function (response, type, full, meta) { return '<a class="btn btn-danger" href="/Exam/Delete/' + full.examObject.ispitId + '">Delete <i class="fa fa-trash-o" aria-hidden="true"></i></a>'; }
-                        }
-
-
-                    ]
-
-                });
-
-
-        }
-    </script>
-}

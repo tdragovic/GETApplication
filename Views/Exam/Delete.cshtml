@@ -2,12 +2,17 @@
 
 @{
     ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Are you sure you want do delete this exam?</h2>
-
-<form asp-action="Delete">
-    <input type="hidden" asp-for="IspitId" />
-    <input type="submit" value="Delete" class="btn btn-danger" />
-    <a asp-action="Index">Back to exams list</a>
-</form>
+<div class="card my-5 p-4">
+    <h4>Are you sure you want do delete this exam?</h4>
+    <form class="d-flex w-100 justify-content-between mt-5 align-items-center">
+        <input type="hidden" id="examId" value="@(Model.IspitId)" />
+        <input type="button" value="Delete" class="btn btn-danger" id="btnDeleteExam" />
+        <a href="../Index">Back to exams list</a>
+    </form>
+</div>
+    @section scripts{
+        <script type="text/javascript" src="~/js/exams/examsdelete.js"></script>
+    }

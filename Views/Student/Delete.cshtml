@@ -2,12 +2,13 @@
 
 @{
     ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<h2>Are you sure you want do delete this student?</h2>
-
-<form asp-action="Delete">
-    <input type="hidden" asp-for="StudentId" />
-    <input type="submit" value="Delete" class="btn btn-danger" />
-    <a asp-action="Index">Back to students list</a>
-</form>
+<div class="card my-5 p-4">
+    <h4>Are you sure you want do delete this student?</h4>
+    <form asp-action="Delete" class="d-flex w-100 justify-content-between mt-5 align-items-center">
+        <input type="hidden" asp-for="StudentId" />
+        <input type="submit" value="Delete" class="btn btn-danger" />
+        <a asp-action="Index">Back to students list</a>
+    </form>
+</div>
